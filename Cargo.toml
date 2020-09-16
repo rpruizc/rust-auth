@@ -7,14 +7,22 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "3.0.1"
 actix-rt = "1.1.1"
+actix-web = "3.0.1"
+argonautica = { version = "0.2.0", features = ["simd"] }
+chrono = { version = "0.4.15", features = ["serde"] }
+color-eyre = "0.5.2"
 config = "0.10.1"
 dotenv = "0.15.0"
-serde = { version = "1.0.116", features = ["derive"] }
 eyre = "0.6.0"
-color-eyre = "0.5.2"
+futures = { version = "0.3.5", features = ["compat"] }
+jsonwebtoken = "7.2.0"
+serde = { version = "1.0.116", features = ["derive"] }
+sqlx = { version = "0.3.5", default-features = false, features = ["runtime-tokio", "macros", "postgres", "uuid", "chrono"] }
 tracing = "0.1.19"
 tracing-futures = "0.2.4"
 tracing-log = { version = "0.1.1", features = ["env_logger"] }
 tracing-subscriber = "0.2.12"
+uuid = { version = "0.8.1", features = ["serde"] }
+validator = "0.11.0"
+validator_derive = "0.11.0"
