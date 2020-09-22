@@ -7,8 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix-identity = "0.3.0"
 actix-rt = "1.1.1"
 actix-web = "3.0.1"
+actix-web-httpauth = "0.5.0"
 argonautica = { version = "0.2.0", features = ["simd"] }
 chrono = { version = "0.4.15", features = ["serde"] }
 color-eyre = "0.5.2"

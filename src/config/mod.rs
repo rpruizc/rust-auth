@@ -2,14 +2,14 @@ pub mod crypto;
 
 use color_eyre::Result;
 use crypto::CryptoService;
+use dotenv::dotenv;
 use eyre::WrapErr;
 use serde::Deserialize;
-use dotenv::dotenv;
-use tracing::{info, instrument};
-use tracing_subscriber::EnvFilter;
 use sqlx::postgres::PgPool;
 use std::sync::Arc;
 use std::time::Duration;
+use tracing::{info, instrument};
+use tracing_subscriber::EnvFilter;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -17,12 +17,14 @@ pub struct Config {
     pub port: i32,
     pub database_url: String,
     pub secret_key: String,
+    pub jwt_secret: String,
 }
 
 impl Config {
     #[instrument]
     pub fn from_env() -> Result<Config> {
         dotenv().ok();       // Loads the configuration to the environment
+
         tracing_subscriber::fmt()
             .with_env_filter(EnvFilter::from_default_env())
             .init();
@@ -30,12 +32,13 @@ impl Config {
         info!("Loading configuration");
 
         let mut c = config::Config::new();
+
         c.merge(config::Environment::default())?;
 
-        c.try_into()
-            .context("loading configuration from environment ")
+        c.try_into().context("loading configuration from environment ")
     }
 
+    #[instrument(skip(self))]
     pub async fn db_pool(&self) -> Result<PgPool> {
         info!("Creating database connection pool");
 
@@ -46,9 +49,11 @@ impl Config {
             .context("creating database connection pool")
     }
 
-    pub fn crypto_service(&self) -> CryptoService {
+    #[instrument(skip(self))]
+    pub fn hashing(&self) -> CryptoService {
         CryptoService {
-            key: Arc::new(self.secret_key.clone())
+            key: Arc::new(self.secret_key.clone()),
+            jwt_secret: Arc::new(self.jwt_secret.clone()),
         }
     }
 }
